@@ -69,6 +69,28 @@ public class TomlWriterTest {
 	}
 
 	@Test
+	public void multilineStringsLiteral() {
+		var config = TomlFormat.newConfig(LinkedHashMap::new);
+		config.set("basic", "normal string");
+		config.set("multiline", "a\nb\t\n\\_\\_\\ \"\"in double quotes\"\"\nbad triplet\"\"\"");
+		var writer = writerWithoutIndentation();
+		writer.setWriteStringLiteralPredicate(s -> true);
+		var result = writer.writeToString(config);
+		var expected = join("basic = 'normal string'",
+			"multiline = '''",
+			"a",
+			"b\t",
+			"\\_\\_\\ \"\"in double quotes\"\"",
+			"bad triplet\"\"\"" + "'''",
+			""
+		);
+		assertEquals(expected, result);
+
+		var reparsed = TomlFormat.instance().createParser().parse(expected);
+		assertEquals(config, reparsed);
+	}
+
+	@Test
 	public void writeToString() {
 		CommentedConfig config = TomlFormat.newConfig(LinkedHashMap::new);
 		Util.populateTest(config);

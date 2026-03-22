@@ -73,7 +73,7 @@ final class StringWriter {
 	static void writeLiteralMultiline(String str, CharacterOutput output) {
 		output.write("'''\n");
 		output.write(str);
-		output.write("''''");
+		output.write("'''");
 	}
 
 	private static void writeBasicChar(int c, CharacterOutput output) {
